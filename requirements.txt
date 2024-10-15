@@ -1,5 +1,6 @@
 streamlit==1.39.0
-paddlepaddle==2.5.0  # Or paddlepaddle-gpu for GPU support
+paddlepaddle==2.0.1
+# Or paddlepaddle-gpu for GPU support
 Pillow==10.4.0
 numpy==2.1.2
-# paddleocr==2.5.0
+paddleocr==2.0.1
