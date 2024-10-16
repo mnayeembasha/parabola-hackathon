@@ -2,12 +2,15 @@ import streamlit as st
 from paddleocr import PaddleOCR, draw_ocr
 from PIL import Image
 import numpy as np
+# from streamlit_copy_to_clipboard import copy_to_clipboard
 import io
 
 # Path to your manually downloaded models
 det_model_dir = './inference/det_r50_vd_db_infer'  # Detection model
 rec_model_dir = './inference/rec_r34_vd_crnn_en_infer'  # Recognition model
 cls_model_dir = './inference/cls_mv3_infer'  # Classification model
+
+Image.MAX_IMAGE_PIXELS = None
 
 # Initialize PaddleOCR with all inferences
 ocr = PaddleOCR(
@@ -35,6 +38,7 @@ if uploaded_file is not None:
 
     # Prepare the JSON output
     output_json = {}
+    extracted_text = ""
     line_number = 1
     for idx in range(len(result)):
         res = result[idx]
@@ -43,10 +47,24 @@ if uploaded_file is not None:
             score = line[1][1]
             output_json[line_number] = {
                 "data": text,
-                "score": score
+                "confidence": score
             }
+            extracted_text += text + "\n"
             line_number += 1
 
+
     # Display the OCR results in JSON format
-    st.subheader("OCR Results")
+    st.header("OCR Results")
+
+    # Display the OCR results line by line in a neat format
+    st.subheader("Extracted Text (Line by Line)")
+    # for line_num, line_info in output_json.items():
+    #     st.write(f"{line_info['data']}")
+    st.text_area("Extracted Text", extracted_text, height=200)
+    # Add the "Copy to Clipboard" button using the third-party component
+    # copy_to_clipboard(extracted_text, "Copy Extracted Text")
+
+
+    st.subheader("JSON Format")
+
     st.json(output_json)
